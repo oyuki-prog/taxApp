@@ -9,16 +9,12 @@ import UIKit
 
 class TotalViewController: UIViewController {
     @IBOutlet weak var totalLabel: UILabel!
-    var totalValue: Double = 0
+    var totalValue: Decimal = 0
     override func viewDidLoad() {
         super.viewDidLoad()
-        totalLabel.text = decimalStyle(numStr: String(totalValue))
+        totalLabel.text = decimalStyle(numStr: String("\(totalValue)"))
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        totalLabel.text = decimalStyle(numStr: String(totalValue))
-    }
 
     func decimalStyle(numStr: String) -> String {
         let formatter = NumberFormatter()

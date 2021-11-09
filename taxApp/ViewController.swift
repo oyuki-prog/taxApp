@@ -12,9 +12,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var taxSegment: UISegmentedControl!
     @IBOutlet weak var resultsTableView: UITableView!
-    var taxRate: Double = 1.1
+    var taxRate: Decimal = 1.1
     var results: [String] = []
-    var total: Double = 0
+    var total: Decimal = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,11 +34,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func addPriceButton(_ sender: Any) {
-        var dNum: Double = NSString(string: resultLabel.text!).doubleValue
-        total = total + dNum
-//        results.append("\(resultLabel.text!)")
-        results.append(resultLabel.text!)
-        resultsTableView.reloadData()
+        if textField.text != nil && Decimal(string: resultLabel.text!) != nil {
+            let dNum: Decimal = Decimal(string: resultLabel.text!)!
+            total = total + dNum
+            results.append(resultLabel.text!)
+            resultsTableView.reloadData()
+        }
     }
     
     
@@ -48,11 +49,13 @@ class ViewController: UIViewController {
         } else {
             taxRate = 1.08
         }
-        if textField.text != "" {
-            let textFieldNum:NSDecimalNumber? = NSDecimalNumber(string: textField.text)
-            resultLabel.text = textFieldNum!.multiplying(by: NSDecimalNumber(value: taxRate)).stringValue
+        if textField.text != "" && Decimal(string: textField.text!) != nil {
+            let textFieldNum: Decimal = Decimal(string: textField.text!)!
+            let taxIncludedPrice = textFieldNum * taxRate
+            resultLabel.text = "\(taxIncludedPrice)"
         } else {
             resultLabel.text = ""
+            textField.text = ""
         }
     }
     
@@ -88,11 +91,13 @@ extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCell.EditingStyle.delete {
-            var dNum: Double = NSString(string: results[indexPath.row]).doubleValue
-            total = total - dNum
-            results.remove(at: indexPath.row)
-            resultsTableView.deleteRows(at: [indexPath as IndexPath], with: UITableView.RowAnimation.automatic)
-            print(total)
+            if Decimal(string: results[indexPath.row]) != nil {
+                let dNum: Decimal = Decimal(string: results[indexPath.row])!
+                total = total - dNum
+                results.remove(at: indexPath.row)
+                resultsTableView.deleteRows(at: [indexPath as IndexPath], with: UITableView.RowAnimation.automatic)
+                print(total)
+            }
         }
     }
 }
